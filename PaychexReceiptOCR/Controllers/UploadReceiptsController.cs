@@ -14,6 +14,7 @@ namespace PaychexReceiptOCR.Controllers
     public class UploadReceiptsController : Controller
     {
         private readonly IWebHostEnvironment _env;
+        Stopwatch watch = new Stopwatch();
 
         // Used for Progress Bar
         private double receiptsProcessed = 0;
@@ -43,6 +44,8 @@ namespace PaychexReceiptOCR.Controllers
         [DisableRequestSizeLimit]
         public async Task<IActionResult> PostAsync()
         {
+            Console.WriteLine("Watch is starting");
+            watch.Start();
             // Finds path to wwwroot
             string wwwrootPath = _env.WebRootPath;
 
@@ -65,6 +68,8 @@ namespace PaychexReceiptOCR.Controllers
             var receipts = await Task.WhenAll(createReceiptTasks);
 
             // Gives the receipts list to the View
+            watch.Stop();
+            Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
             return View(receipts);
         }
 
